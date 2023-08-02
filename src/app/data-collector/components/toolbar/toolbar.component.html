@@ -1,5 +1,5 @@
 <div class="toolbar-wrapper">
-  <form class="form" nz-form [nzLayout]="'inline'" [formGroup]="form" (ngSubmit)="submitForm()">
+  <form class="form" nz-form [nzLayout]="'inline'" [formGroup]="form" (ngSubmit)="updateStream()">
     <div class="form-items">
       <nz-form-item nz-tooltip nzTooltipTitle="Timer, ms">
         <nz-form-control nzErrorTip="Timer is required">
@@ -35,12 +35,6 @@
         nz-input
         placeholder="additional ids"
         [readonly]="true"/>
-      <nz-form-item>
-        <nz-form-control>
-          <button nz-button nzType="primary" [disabled]="!form.valid || isStartBtnDisabled">Start stream</button>
-        </nz-form-control>
-      </nz-form-item>
-      <button (click)="stopStream($event)" nz-button nzType="default" [disabled]="!isStartBtnDisabled">Stop stream</button>
       <button nz-tooltip
               nzTooltipTitle="Reset form"
               class="reset"

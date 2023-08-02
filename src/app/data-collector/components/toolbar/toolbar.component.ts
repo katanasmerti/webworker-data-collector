@@ -3,20 +3,21 @@ import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/form
 import {BASE_ARRAY_SIZE} from "../../../shared/consts/base-array-size.const";
 import {interval, Observable, Subscription} from "rxjs";
 import {BASE_TIMER} from "../../../shared/consts/base-timer.const";
-import {WorkerService} from "../../../shared/services/worker.service";
+import {DataService} from "../../../shared/services/data.service";
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
+
 export class ToolbarComponent {
   public form: FormGroup;
-  public isStartBtnDisabled: boolean = true;
   public arraySize: number = BASE_ARRAY_SIZE;
 
   private subscription$ = new Subscription();
-  private stream$: Observable<number> = interval(BASE_TIMER);
+  private interval$: Observable<number> = interval(BASE_TIMER);
+  private worker: Worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
 
   public get idFormControl(): AbstractControl | null {
     return this.form.get('id');
@@ -28,7 +29,7 @@ export class ToolbarComponent {
 
   constructor(
     private fb: FormBuilder,
-    private workerService: WorkerService) {
+    private workerService: DataService) {
     this.form = this.fb.group({
       timer: [BASE_TIMER, Validators.required],
       size: [BASE_ARRAY_SIZE, Validators.required],
@@ -39,23 +40,26 @@ export class ToolbarComponent {
 
   public ngOnInit(): void {
     this.subscribeOnStream();
+    this.form.valueChanges.subscribe((data) => {
+      this.stopStream();
+      this.updateStream();
+    })
   }
 
   public ngOnDestroy(): void {
     this.subscription$.unsubscribe();
   }
 
-  public submitForm(): void {
+  public updateStream(): void {
     this.subscription$.unsubscribe();
-    this.isStartBtnDisabled = true;
     this.arraySize = this.form.getRawValue().size;
-    this.stream$ = interval(this.form.getRawValue().timer);
+    this.interval$ = interval(this.form.getRawValue().timer);
     this.subscribeOnStream();
   }
 
-  public stopStream($event: MouseEvent): void {
-    $event.preventDefault();
-    this.isStartBtnDisabled = false;
+  public stopStream(): void {
+    this.worker.terminate();
+    this.worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
     this.subscription$.unsubscribe();
   }
 
@@ -80,9 +84,17 @@ export class ToolbarComponent {
   }
 
   private subscribeOnStream(): void {
-    this.subscription$ = new Subscription();
-    this.subscription$.add(this.stream$.subscribe(() => {
-      this.workerService.generateItems(this.arraySize);
-    }));
+    if (typeof Worker !== 'undefined') {
+      this.worker.onmessage = ({ data }) => {
+        this.workerService.stream$.next(data);
+      };
+      this.subscription$ = new Subscription();
+      this.subscription$.add(this.interval$.subscribe(() => {
+        this.worker.postMessage(this.arraySize);
+      }));
+    } else {
+      alert('Web Workers are not supported in this environment.');
+    }
+
   }
 }

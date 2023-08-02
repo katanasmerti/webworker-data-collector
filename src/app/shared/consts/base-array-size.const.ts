@@ -1,1 +1,1 @@
-export const BASE_ARRAY_SIZE = 10;
+export const BASE_ARRAY_SIZE = 20;

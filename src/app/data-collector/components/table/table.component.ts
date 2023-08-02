@@ -1,8 +1,9 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {Item} from "../../../shared/classes/item.class";
-import {map, Subscription} from "rxjs";
-import {WorkerService} from "../../../shared/services/worker.service";
+import { Subscription} from "rxjs";
+import {DataService} from "../../../shared/services/data.service";
 import {IItem} from "../../../shared/interfaces/item.interface";
+import { plainToClass } from "class-transformer";
 
 @Component({
   selector: 'app-table',
@@ -15,15 +16,16 @@ export class TableComponent {
 
   private subscription$ = new Subscription();
 
-  constructor(private workerService: WorkerService, private cdr: ChangeDetectorRef) { }
+  constructor(private workerService: DataService, private cdr: ChangeDetectorRef) { }
 
   public ngOnInit(): void {
-    this.subscription$.add(this.workerService.workerData$
-      .pipe(map((data: IItem[]) => data.slice(-10)))
+    this.subscription$.add(this.workerService.stream$
       .subscribe((data: IItem[]) => {
           this.pageSize = data.length;
           this.items = data.map((el: IItem) => {
-            return new Item(el);
+            const updatedItem = plainToClass(Item, el);
+            updatedItem.setChild(el.child);
+            return updatedItem;
           });
           this.cdr.markForCheck();
         }
