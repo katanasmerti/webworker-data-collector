@@ -1,0 +1,29 @@
+.toolbar-wrapper {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-items {
+  display: flex;
+}
+
+.ids {
+  height: 32px;
+  margin-right: 16px;
+}
+
+.add-id {
+  height: 32px;
+}
+
+.reset {
+  margin-left: 16px;
+}

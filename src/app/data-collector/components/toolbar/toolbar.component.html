@@ -1,0 +1,55 @@
+<div class="toolbar-wrapper">
+  <form class="form" nz-form [nzLayout]="'inline'" [formGroup]="form" (ngSubmit)="submitForm()">
+    <div class="form-items">
+      <nz-form-item nz-tooltip nzTooltipTitle="Timer, ms">
+        <nz-form-control nzErrorTip="Timer is required">
+          <nz-input-group nzPrefixIcon="clock-circle">
+            <input formControlName="timer" nz-input placeholder="Timer, ms" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item  nz-tooltip nzTooltipTitle="Array size">
+        <nz-form-control nzErrorTip="Array size is required">
+          <nz-input-group nzPrefixIcon="bars">
+            <input formControlName="size" nz-input placeholder="Array size" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-input-group
+        nz-tooltip
+        nzTooltipTitle="Press [enter] to add new id"
+        class="add-id">
+        <input
+          formControlName="id"
+          type="number"
+          nz-input
+          placeholder="add new id"
+          (keydown.enter)="addId(idFormControl?.value)" />
+      </nz-input-group>
+    </div>
+    <div class="form-items">
+      <input
+        nz-tooltip nzTooltipTitle="Additional ids"
+        formControlName="ids"
+        class="ids"
+        nz-input
+        placeholder="additional ids"
+        [readonly]="true"/>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [disabled]="!form.valid || isStartBtnDisabled">Start stream</button>
+        </nz-form-control>
+      </nz-form-item>
+      <button (click)="stopStream($event)" nz-button nzType="default" [disabled]="!isStartBtnDisabled">Stop stream</button>
+      <button nz-tooltip
+              nzTooltipTitle="Reset form"
+              class="reset"
+              nz-button
+              nzType="primary"
+              nzShape="circle"
+              (click)="resetForm($event)">
+        <span nz-icon nzType="close"></span>
+      </button>
+    </div>
+  </form>
+</div>
