@@ -15,25 +15,33 @@
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
-      <nz-input-group
+      <input
+        [(ngModel)]="newId"
+        [ngModelOptions]="{standalone: true}"
+        type="number"
+        nz-input
         nz-tooltip
-        nzTooltipTitle="Press [enter] to add new id"
-        class="add-id">
-        <input
-          formControlName="id"
-          type="number"
-          nz-input
-          placeholder="add new id"
-          (keydown.enter)="addId(idFormControl?.value)" />
-      </nz-input-group>
+        nzTooltipTitle="Id"
+        placeholder="Id"
+        class="add-id"/>
+      <button nz-tooltip
+              nzTooltipTitle="Add New Id"
+              nz-button
+              class="add-id-btn"
+              nzType="primary"
+              (click)="addId()">
+        Add New Id
+      </button>
     </div>
     <div class="form-items">
       <input
-        nz-tooltip nzTooltipTitle="Additional ids"
-        formControlName="ids"
+        nz-tooltip
+        nzTooltipTitle="Additional ids"
+        [(ngModel)]="idsView"
+        [ngModelOptions]="{standalone: true}"
         class="ids"
         nz-input
-        placeholder="additional ids"
+        placeholder="Additional ids"
         [readonly]="true"/>
       <button nz-tooltip
               nzTooltipTitle="Reset form"

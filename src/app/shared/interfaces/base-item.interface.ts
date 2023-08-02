@@ -1,4 +1,4 @@
 export interface IBaseItem {
-  id: number;
+  id: string;
   color: string;
 }

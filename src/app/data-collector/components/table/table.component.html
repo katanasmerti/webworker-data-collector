@@ -1,5 +1,5 @@
 <div class="table-wrapper">
-  <app-toolbar></app-toolbar>
+  <app-toolbar (idsChanged)="onIdsChanged($event)" (clearFilters)="onClearFilters()"></app-toolbar>
   <nz-table class="table"
             [nzTemplateMode]="true"
             [nzBordered]="true"
@@ -7,26 +7,26 @@
             [nzPageSize]="pageSize"
             [nzShowPagination]="false">
     <thead>
-    <tr>
-      <th>Id</th>
-      <th>Int</th>
-      <th>Float</th>
-      <th>Color</th>
-      <th>Child</th>
-    </tr>
+      <tr>
+        <th>Id</th>
+        <th>Int</th>
+        <th>Float</th>
+        <th>Color</th>
+        <th>Child</th>
+      </tr>
     </thead>
     <tbody class="rows">
-    <tr *ngFor="let item of items; trackBy: trackByFn">
-      <td>{{ item.id }}</td>
-      <td>{{ item.int }}</td>
-      <td>{{ item.float }}</td>
-      <td>
-        <div [ngStyle]="item.colorStyle">{{ item.color }}</div>
-      </td>
-      <td>
-        <app-inner-table-child [data]="item.getChild"></app-inner-table-child>
-      </td>
-    </tr>
+      <tr *ngFor="let item of items; trackBy: trackByFn">
+        <td>{{ item.id }}</td>
+        <td>{{ item.int }}</td>
+        <td>{{ item.float }}</td>
+        <td>
+          <div [ngStyle]="item.colorStyle">{{ item.color }}</div>
+        </td>
+        <td>
+          <app-inner-table-child [data]="item.getChild"></app-inner-table-child>
+        </td>
+      </tr>
     </tbody>
   </nz-table>
 </div>

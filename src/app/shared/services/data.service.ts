@@ -8,6 +8,4 @@ import { IItem } from '../interfaces/item.interface';
 
 export class DataService {
   public stream$: BehaviorSubject<IItem[]> = new BehaviorSubject<IItem[]>([]);
-
-  constructor() { }
 }

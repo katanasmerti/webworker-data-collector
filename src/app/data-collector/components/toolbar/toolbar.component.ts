@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BASE_ARRAY_SIZE} from "../../../shared/consts/base-array-size.const";
-import {interval, Observable, Subscription} from "rxjs";
-import {BASE_TIMER} from "../../../shared/consts/base-timer.const";
-import {DataService} from "../../../shared/services/data.service";
+import { Component, EventEmitter, Output } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
+import { interval, Observable, Subscription } from "rxjs";
+import { BASE_TIMER } from '../../../shared/consts/base-timer.const';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -12,10 +12,16 @@ import {DataService} from "../../../shared/services/data.service";
 })
 
 export class ToolbarComponent {
+  @Output() idsChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() clearFilters: EventEmitter<void> = new EventEmitter<void>();
+
   public form: FormGroup;
   public arraySize: number = BASE_ARRAY_SIZE;
+  public newId: number = null;
+  public idsView: string = '';
 
-  private subscription$ = new Subscription();
+  private intervalSubscription$ = new Subscription();
+  private formSubscription$ = new Subscription();
   private interval$: Observable<number> = interval(BASE_TIMER);
   private worker: Worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
 
@@ -40,37 +46,54 @@ export class ToolbarComponent {
 
   public ngOnInit(): void {
     this.subscribeOnStream();
-    this.form.valueChanges.subscribe((data) => {
-      this.stopStream();
-      this.updateStream();
-    })
+    this.formSubscription$.add(
+      this.form.valueChanges.subscribe(() => {
+        this.idsView = this.idsFormControl.value.join(' ');
+        this.refreshWorker();
+        this.updateStream();
+      })
+    );
   }
 
   public ngOnDestroy(): void {
-    this.subscription$.unsubscribe();
+    this.intervalSubscription$.unsubscribe();
+    this.formSubscription$.unsubscribe();
   }
 
   public updateStream(): void {
-    this.subscription$.unsubscribe();
+    this.intervalSubscription$.unsubscribe();
     this.arraySize = this.form.getRawValue().size;
     this.interval$ = interval(this.form.getRawValue().timer);
     this.subscribeOnStream();
   }
 
-  public stopStream(): void {
+  public refreshWorker(): void {
     this.worker.terminate();
     this.worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
-    this.subscription$.unsubscribe();
   }
 
-  public addId($event: number): void {
-    if ($event) {
-      const ids = this.idsFormControl?.getRawValue();
-      if (!ids.includes(` ${$event}`)) {
-        this.form.patchValue({ ids: [...ids, ` ${$event}`] });
+  public addId(): void {
+    if (this.newId) {
+      const ids = [...this.form.value.ids];
+      if (!ids.includes(`${this.newId}`)) {
+        if (ids.length === 10 || ids.length === this.form.value.size) {
+          const updatedIds = ids.slice(1);
+          updatedIds.push(this.newId);
+          this.idsFormControl.patchValue(updatedIds);
+          this.resetIdInputAndEmitEvent(updatedIds);
+          return;
+        }
+
+        const updatedIds = [...ids, `${this.newId}`]
+        this.idsFormControl.patchValue(updatedIds);
+        this.resetIdInputAndEmitEvent(updatedIds);
       }
     }
-    this.idFormControl?.reset();
+  }
+
+  public resetIdInputAndEmitEvent(data: string[]): void {
+    this.idsChanged.emit(data);
+    this.newId = null;
   }
 
   public resetForm($event: MouseEvent): void {
@@ -81,6 +104,7 @@ export class ToolbarComponent {
       id: null,
       ids: [],
     });
+    this.clearFilters.emit();
   }
 
   private subscribeOnStream(): void {
@@ -88,13 +112,12 @@ export class ToolbarComponent {
       this.worker.onmessage = ({ data }) => {
         this.workerService.stream$.next(data);
       };
-      this.subscription$ = new Subscription();
-      this.subscription$.add(this.interval$.subscribe(() => {
+      this.intervalSubscription$ = new Subscription();
+      this.intervalSubscription$.add(this.interval$.subscribe(() => {
         this.worker.postMessage(this.arraySize);
       }));
     } else {
       alert('Web Workers are not supported in this environment.');
     }
-
   }
 }

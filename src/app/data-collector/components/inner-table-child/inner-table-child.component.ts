@@ -6,6 +6,7 @@ import { ItemChild } from '../../../shared/classes/item-child.class';
   templateUrl: './inner-table-child.component.html',
   styleUrls: ['./inner-table-child.component.scss']
 })
+
 export class InnerTableChildComponent {
   @Input() public data: ItemChild | undefined;
 }

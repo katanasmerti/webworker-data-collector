@@ -3,17 +3,17 @@
           [nzTemplateMode]="true"
           [nzShowPagination]="false">
   <thead>
-  <tr>
-    <th>Id</th>
-    <th>Color</th>
-  </tr>
+    <tr>
+      <th>Id</th>
+      <th>Color</th>
+    </tr>
   </thead>
   <tbody>
-  <tr>
-    <td>{{ data?.id }}</td>
-    <td>
-      <div [ngStyle]="data?.colorStyle">{{ data?.color }}</div>
-    </td>
-  </tr>
+    <tr>
+      <td>{{ data.id }}</td>
+      <td>
+        <div [ngStyle]="data.colorStyle">{{ data.color }}</div>
+      </td>
+    </tr>
   </tbody>
 </nz-table>
