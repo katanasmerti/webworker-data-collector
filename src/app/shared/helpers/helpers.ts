@@ -1,10 +1,10 @@
 import { IItem } from '../interfaces/item.interface';
 
-function getRandomStrFloat(): string {
+export function getRandomStrFloat(): string {
   return (Math.random() * (18 - 1) + 1).toFixed(18);
 }
 
-function getRandomColor(): string {
+export function getRandomColor(): string {
   const letters = '0123456789ABCDEF';
   let color = '#';
   for (let i = 0; i < 6; i++) {

@@ -1,21 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InnerTableChildComponent } from './inner-table-child.component';
+import { TestBed, async } from '@angular/core/testing';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 describe('InnerTableChildComponent', () => {
-  let component: InnerTableChildComponent;
-  let fixture: ComponentFixture<InnerTableChildComponent>;
-
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [InnerTableChildComponent]
-    });
-    fixture = TestBed.createComponent(InnerTableChildComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+      declarations: [
+        InnerTableChildComponent
+      ],
+      imports: [
+        NzTableModule
+      ]
+    }).compileComponents();
+  }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create the InnerTableChildComponent', () => {
+    const fixture = TestBed.createComponent(InnerTableChildComponent);
+    const comp = fixture.debugElement.componentInstance;
+    expect(comp).toBeTruthy();
   });
 });
+

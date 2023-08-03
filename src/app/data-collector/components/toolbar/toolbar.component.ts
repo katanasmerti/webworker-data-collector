@@ -4,11 +4,12 @@ import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
 import { interval, Observable, Subscription } from "rxjs";
 import { BASE_TIMER } from '../../../shared/consts/base-timer.const';
 import { DataService } from '../../../shared/services/data.service';
+import { WorkerService } from '../../../shared/services/worker.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
 })
 
 export class ToolbarComponent {
@@ -23,7 +24,7 @@ export class ToolbarComponent {
   private intervalSubscription$ = new Subscription();
   private formSubscription$ = new Subscription();
   private interval$: Observable<number> = interval(BASE_TIMER);
-  private worker: Worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
+  private worker: Worker = this.workerService.createWorker();
 
   public get idFormControl(): AbstractControl | null {
     return this.form.get('id');
@@ -35,7 +36,8 @@ export class ToolbarComponent {
 
   constructor(
     private fb: FormBuilder,
-    private workerService: DataService) {
+    private workerService: WorkerService,
+    private dataService: DataService) {
     this.form = this.fb.group({
       timer: [BASE_TIMER, Validators.required],
       size: [BASE_ARRAY_SIZE, Validators.required],
@@ -69,7 +71,7 @@ export class ToolbarComponent {
 
   public refreshWorker(): void {
     this.worker.terminate();
-    this.worker = new Worker(new URL('../../../shared/web-workers/stream.worker', import.meta.url));
+    this.worker = this.workerService.createWorker();
   }
 
   public addId(): void {
@@ -110,7 +112,7 @@ export class ToolbarComponent {
   private subscribeOnStream(): void {
     if (typeof Worker !== 'undefined') {
       this.worker.onmessage = ({ data }) => {
-        this.workerService.stream$.next(data);
+        this.dataService.stream$.next(data);
       };
       this.intervalSubscription$ = new Subscription();
       this.intervalSubscription$.add(this.interval$.subscribe(() => {

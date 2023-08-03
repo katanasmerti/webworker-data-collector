@@ -19,10 +19,10 @@ export class TableComponent {
 
   private subscription$ = new Subscription();
 
-  constructor(private workerService: DataService, private cdr: ChangeDetectorRef) { }
+  constructor(private dataService: DataService, private cdr: ChangeDetectorRef) { }
 
   public ngOnInit(): void {
-    this.subscription$.add(this.workerService.stream$
+    this.subscription$.add(this.dataService.stream$
       .pipe(
         map((data: IItem[]) => {
           const updatedData = data.map((item: IItem, index: number) => {
