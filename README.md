@@ -26,8 +26,8 @@ Build the application to `dist/`.
 npm run build
 ```
 
-## Running unit tests
+## Running unit tests via [Jest](https://jestjs.io/)
 
 ```
-Run `npm run test` to execute the unit tests via [Jest](https://jestjs.io/).
+npm run test
 ```
