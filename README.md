@@ -2,13 +2,30 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.3.
 
-## Development server
+## Deploy
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+[Production](https://endearing-faun-9844bc.netlify.app/)
 
-## Code scaffolding
+## Development
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Install all dependencies.
+
+```
+npm i
+```
+
+Start serving the application to `http://localhost:4200`.
+
+```
+npm run start
+```
+
+Build the application to `dist/`.
+
+```
+npm run build
+```
+
 
 ## Build
 
@@ -18,6 +35,3 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Deploy
-
-[Production](https://endearing-faun-9844bc.netlify.app/)
