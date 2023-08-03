@@ -2,9 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.3.
 
-## Deploy
-
-[Production](https://endearing-faun-9844bc.netlify.app/)
+## [Deploy](https://endearing-faun-9844bc.netlify.app/)
 
 ## Development
 
