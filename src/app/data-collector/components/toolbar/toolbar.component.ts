@@ -25,7 +25,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   private intervalSubscription$ = new Subscription();
   private formSubscription$ = new Subscription();
   private interval$: Observable<number> = interval(BASE_TIMER);
-  private worker: Worker = this.workerService.createWorker();
 
   public get idsFormControl(): AbstractControl | null {
     return this.form.get('ids');
@@ -44,6 +43,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.workerService.createWorker()
     this.subscribeOnStream();
     this.formSubscription$.add(
       this.form.valueChanges.subscribe(() => {
@@ -67,8 +67,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   public refreshWorker(): void {
-    this.worker.terminate();
-    this.worker = this.workerService.createWorker();
+    this.workerService.terminateWorker();
+    this.workerService.createWorker();
   }
 
   public addId(): void {
@@ -108,12 +108,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   private subscribeOnStream(): void {
     if (typeof Worker !== 'undefined') {
-      this.worker.onmessage = ({ data }) => {
+      this.workerService.worker.onmessage = ({ data }) => {
         this.dataService.stream$.next(data);
       };
       this.intervalSubscription$ = new Subscription();
       this.intervalSubscription$.add(this.interval$.subscribe(() => {
-        this.worker.postMessage(this.arraySize);
+        this.workerService.worker.postMessage(this.arraySize);
       }));
     } else {
       alert('Web Workers are not supported in this environment.');
