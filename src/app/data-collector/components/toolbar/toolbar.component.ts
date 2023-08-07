@@ -57,6 +57,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.intervalSubscription$.unsubscribe();
     this.formSubscription$.unsubscribe();
+    this.workerService.terminateWorker();
     this.workerService.destroyInterval();
   }
 
