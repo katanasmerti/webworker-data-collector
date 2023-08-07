@@ -109,13 +109,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnStream(): void {
-    if (typeof Worker !== 'undefined' && this.workerService.worker) {
-      this.workerService.worker.onmessage = ({ data }) => {
-        this.dataService.stream$.next(data);
-      };
+    if (this.workerService.worker) {
       this.intervalSubscription$ = new Subscription();
       this.intervalSubscription$.add(this.workerService.interval$.subscribe(() => {
-        this.workerService.worker.postMessage(this.arraySize);
+        this.workerService.pushDataToWorker(this.arraySize);
       }));
     } else {
       alert('Web Workers are not supported in this environment.');
