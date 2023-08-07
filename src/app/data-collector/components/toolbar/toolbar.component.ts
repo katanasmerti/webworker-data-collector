@@ -79,21 +79,15 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         if (ids.length === 10 || ids.length === this.form.value.size) {
           const updatedIds = ids.slice(1);
           updatedIds.push(this.newId);
-          this.idsFormControl.patchValue(updatedIds);
-          this.resetIdInputAndEmitEvent(updatedIds);
+          this.updateAndResetIdsControl(updatedIds);
           return;
         }
 
-        const updatedIds = [...ids, `${this.newId}`]
-        this.idsFormControl.patchValue(updatedIds);
-        this.resetIdInputAndEmitEvent(updatedIds);
+        const updatedIds = [...ids, `${this.newId}`];
+        this.updateAndResetIdsControl(updatedIds);
+
       }
     }
-  }
-
-  public resetIdInputAndEmitEvent(data: string[]): void {
-    this.idsChanged.emit(data);
-    this.newId = null;
   }
 
   public resetForm($event: MouseEvent): void {
@@ -105,6 +99,16 @@ export class ToolbarComponent implements OnInit, OnDestroy {
       ids: [],
     });
     this.clearFilters.emit();
+  }
+
+  private resetIdInputAndEmitEvent(data: string[]): void {
+    this.idsChanged.emit(data);
+    this.newId = null;
+  }
+
+  private updateAndResetIdsControl(updatedIds: string[]): void {
+    this.idsFormControl.patchValue(updatedIds);
+    this.resetIdInputAndEmitEvent(updatedIds);
   }
 
   private subscribeOnStream(): void {
