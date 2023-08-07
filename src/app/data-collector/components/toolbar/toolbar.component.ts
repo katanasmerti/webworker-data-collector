@@ -79,13 +79,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         if (ids.length === 10 || ids.length === this.form.value.size) {
           const updatedIds = ids.slice(1);
           updatedIds.push(this.newId);
-          this.updateAndResetIdsControl(updatedIds);
+          this.updateIdsControl(updatedIds);
           return;
         }
-
         const updatedIds = [...ids, `${this.newId}`];
-        this.updateAndResetIdsControl(updatedIds);
-
+        this.updateIdsControl(updatedIds);
       }
     }
   }
@@ -106,7 +104,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this.newId = null;
   }
 
-  private updateAndResetIdsControl(updatedIds: string[]): void {
+  private updateIdsControl(updatedIds: string[]): void {
     this.idsFormControl.patchValue(updatedIds);
     this.resetIdInputAndEmitEvent(updatedIds);
   }
