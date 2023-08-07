@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 import { BASE_TIMER } from '../../../shared/consts/base-timer.const';
 import { WorkerService } from '../../../shared/services/worker.service';
 
