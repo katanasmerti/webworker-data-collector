@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { Item} from '../../../shared/classes/item.class';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { Item } from '../../../shared/classes/item.class';
 import { Subscription } from "rxjs";
 import { map } from 'rxjs/operators';
 import { DataService } from '../../../shared/services/data.service';
@@ -9,7 +9,8 @@ import { plainToClass } from "class-transformer";
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+  styleUrls: ['./table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class TableComponent {

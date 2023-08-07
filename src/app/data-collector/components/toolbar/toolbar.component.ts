@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
 import { interval, Observable, Subscription } from "rxjs";
@@ -10,9 +10,10 @@ import { WorkerService } from '../../../shared/services/worker.service';
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class ToolbarComponent {
+export class ToolbarComponent implements OnInit, OnDestroy {
   @Output() idsChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() clearFilters: EventEmitter<void> = new EventEmitter<void>();
 
@@ -25,10 +26,6 @@ export class ToolbarComponent {
   private formSubscription$ = new Subscription();
   private interval$: Observable<number> = interval(BASE_TIMER);
   private worker: Worker = this.workerService.createWorker();
-
-  public get idFormControl(): AbstractControl | null {
-    return this.form.get('id');
-  }
 
   public get idsFormControl(): AbstractControl | null {
     return this.form.get('ids');
