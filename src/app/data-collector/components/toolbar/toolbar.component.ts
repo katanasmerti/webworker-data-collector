@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
-import { interval, Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { BASE_TIMER } from '../../../shared/consts/base-timer.const';
 import { DataService } from '../../../shared/services/data.service';
 import { WorkerService } from '../../../shared/services/worker.service';
@@ -24,7 +24,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   private intervalSubscription$ = new Subscription();
   private formSubscription$ = new Subscription();
-  private interval$: Observable<number> = interval(BASE_TIMER);
 
   public get idsFormControl(): AbstractControl | null {
     return this.form.get('ids');
@@ -43,7 +42,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.workerService.createWorker()
+    this.workerService.createInterval();
+    this.workerService.createWorker();
     this.subscribeOnStream();
     this.formSubscription$.add(
       this.form.valueChanges.subscribe(() => {
@@ -57,12 +57,14 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.intervalSubscription$.unsubscribe();
     this.formSubscription$.unsubscribe();
+    this.workerService.destroyInterval();
   }
 
   public updateStream(): void {
+    this.workerService.destroyInterval();
     this.intervalSubscription$.unsubscribe();
     this.arraySize = this.form.getRawValue().size;
-    this.interval$ = interval(this.form.getRawValue().timer);
+    this.workerService.createInterval(this.form.getRawValue().timer);
     this.subscribeOnStream();
   }
 
@@ -112,7 +114,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         this.dataService.stream$.next(data);
       };
       this.intervalSubscription$ = new Subscription();
-      this.intervalSubscription$.add(this.interval$.subscribe(() => {
+      this.intervalSubscription$.add(this.workerService.interval$.subscribe(() => {
         this.workerService.worker.postMessage(this.arraySize);
       }));
     } else {
