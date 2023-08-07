@@ -16,7 +16,7 @@ export class WorkerService {
     if (typeof Worker !== 'undefined') {
       const worker = new Worker(new URL('../../shared/web-workers/stream.worker', import.meta.url));
       this.worker = worker;
-      this.handleWorker();
+      this.handleWorkerEvent();
     }
   }
 
@@ -36,7 +36,7 @@ export class WorkerService {
     this.worker.postMessage(data);
   }
 
-  private handleWorker(): void {
+  private handleWorkerEvent(): void {
     this.worker.onmessage = ({ data }) => {
       this.dataService.stream$.next(data);
     };
