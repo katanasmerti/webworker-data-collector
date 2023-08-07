@@ -3,7 +3,6 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { BASE_ARRAY_SIZE } from '../../../shared/consts/base-array-size.const';
 import { Subscription } from "rxjs";
 import { BASE_TIMER } from '../../../shared/consts/base-timer.const';
-import { DataService } from '../../../shared/services/data.service';
 import { WorkerService } from '../../../shared/services/worker.service';
 
 @Component({
@@ -31,8 +30,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private workerService: WorkerService,
-    private dataService: DataService) {
+    private workerService: WorkerService) {
     this.form = this.fb.group({
       timer: [BASE_TIMER, Validators.required],
       size: [BASE_ARRAY_SIZE, Validators.required],
