@@ -107,7 +107,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnStream(): void {
-    if (typeof Worker !== 'undefined') {
+    if (typeof Worker !== 'undefined' && this.workerService.worker) {
       this.workerService.worker.onmessage = ({ data }) => {
         this.dataService.stream$.next(data);
       };
