@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Item } from '../../../shared/classes/item.class';
 import { Subscription } from "rxjs";
 import { map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { plainToClass } from "class-transformer";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class TableComponent {
+export class TableComponent implements OnInit, OnDestroy {
   public items: Item[] = [];
   public pageSize: number = 0;
   public ids: string[] = [];
