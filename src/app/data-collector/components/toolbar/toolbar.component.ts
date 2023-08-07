@@ -63,8 +63,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   public updateStream(): void {
     this.intervalSubscription$.unsubscribe();
     this.workerService.destroyInterval();
-    this.arraySize = this.form.getRawValue().size;
     this.workerService.createInterval(this.form.getRawValue().timer);
+    this.arraySize = this.form.getRawValue().size;
     this.subscribeOnStream();
   }
 
